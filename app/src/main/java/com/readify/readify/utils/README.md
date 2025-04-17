@@ -1,0 +1,1 @@
+đây là package chung
