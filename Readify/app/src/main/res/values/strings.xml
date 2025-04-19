@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Readify</string>
+    <string name="setting">Setting</string>
+    <string name="viewed">Viewed</string>
+    <string name="following">Following</string>
+    <string name="my_profile">My profile</string>
+    <string name="library_page">Library page</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="save_changes">Save changes</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="password">Password</string>
+    <string name="user_name">Nguyễn Khánh Linh</string>
+    <string name="desc_add_book">Thêm sách mới</string>
+</resources>
