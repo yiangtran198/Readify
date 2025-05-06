@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         reviewList.add(new Review("Quốc Cường", "Sách hay lắm", 5, "20 thg 06 2024"));
         reviewList.add(new Review("Dieu Dieu", "10 điêm", 5, "04 thg 07 2024"));
 
+
         reviewAdapter = new ReviewAdapter(reviewList);
         reviewRecyclerView.setAdapter(reviewAdapter);
     }

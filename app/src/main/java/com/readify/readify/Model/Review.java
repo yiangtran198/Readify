@@ -4,7 +4,6 @@ public class Review {
     private String content;
     private int rating;
     private String date;
-
     public Review(String reviewerName, String content, int rating, String date) {
         this.reviewerName = reviewerName;
         this.content = content;
