@@ -1,55 +1,139 @@
 figma link: https://www.figma.com/design/PbSsCJbh6pfmRdAxOfBpQ1/LTUD-Readify?node-id=0-1&p=f&t=MJUbfyn4SCof73h0-0
 
-# Hướng dẫn tích hợp Firebase và lấy dữ liệu cho ứng dụng đọc truyện trên Android
+# 📚 Hướng dẫn tích hợp Firebase cho ứng dụng đọc truyện (Java)
 
-Tài liệu này dành cho các thành viên nhóm sử dụng Firebase đã được thiết lập sẵn để:
+Tài liệu này hướng dẫn sử dụng Firebase với Java để:
 
-* Đăng nhập người dùng
-* Lưu trữ trạng thái đang đọc
-* Lưu danh sách truyện yêu thích
-* Lấy danh sách truyện và nội dung chapter
-
----
-
-### a. Đăng ký người dùng bằng Email & Mật khẩu
-
-```kotlin
-FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-    .addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            val uid = task.result?.user?.uid
-            // Lưu thêm thông tin user nếu cần
-        }
-    }
-```
-
-### b. Đăng nhập người dùng
-
-```kotlin
-FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-    .addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            val uid = FirebaseAuth.getInstance().currentUser?.uid
-            // Dùng uid để lưu truyện, trạng thái đọc, v.v.
-        }
-    }
-```
-
-### c. Lấy UID hiện tại sau khi đã đăng nhập
-
-```kotlin
-val uid = FirebaseAuth.getInstance().currentUser?.uid
-```
-
-> 🔐 UID này sẽ dùng làm `userId` trong collection `users`
+- Đăng nhập & đăng ký người dùng bằng email
+- Lưu danh sách truyện, chapter, trạng thái đang đọc, và yêu thích
+- Truy xuất dữ liệu từ Firestore
 
 ---
 
-## 3. Cấu trúc dữ liệu Firebase Firestore
+## 1. Đăng ký người dùng
 
-### Collection: `comics`
+```java
+FirebaseAuth.getInstance()
+    .createUserWithEmailAndPassword(email, password)
+    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task) {
+            if (task.isSuccessful()) {
+                String uid = task.getResult().getUser().getUid();
+                // Lưu thêm thông tin người dùng nếu cần
+            }
+        }
+    });
+```
 
-```plaintext
+## 2. Đăng nhập người dùng
+
+```java
+FirebaseAuth.getInstance()
+    .signInWithEmailAndPassword(email, password)
+    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task) {
+            if (task.isSuccessful()) {
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                // Sử dụng UID để truy xuất dữ liệu cá nhân
+            }
+        }
+    });
+```
+
+## 3. Lấy UID hiện tại
+
+```java
+String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+```
+
+> 🔐 UID này sẽ là khóa chính trong collection `users`.
+
+## 4. Lấy danh sách truyện
+
+```java
+FirebaseFirestore db = FirebaseFirestore.getInstance();
+db.collection("comics")
+    .get()
+    .addOnSuccessListener(queryDocumentSnapshots -> {
+        for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+            String title = doc.getString("title");
+            // Xử lý dữ liệu
+        }
+    });
+```
+
+## 5. Lấy danh sách chapter của một truyện
+
+```java
+db.collection("comics")
+    .document(comicId)
+    .collection("chapters")
+    .get()
+    .addOnSuccessListener(queryDocumentSnapshots -> {
+        for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+            String title = doc.getString("title");
+        }
+    });
+```
+
+## 6. Lấy nội dung một chapter
+
+```java
+db.collection("comics")
+    .document(comicId)
+    .collection("chapters")
+    .document(chapterId)
+    .get()
+    .addOnSuccessListener(documentSnapshot -> {
+        List<String> pages = (List<String>) documentSnapshot.get("pages");
+    });
+```
+
+## 7. Thêm truyện vào danh sách yêu thích
+
+```java
+db.collection("users")
+    .document(uid)
+    .update("favorites", FieldValue.arrayUnion(comicId));
+```
+
+## 8. Cập nhật trạng thái đang đọc
+
+```java
+Map<String, Object> chapterInfo = new HashMap<>();
+chapterInfo.put("chapter_id", "chapter2");
+chapterInfo.put("page_index", 3);
+
+Map<String, Object> readingStatus = new HashMap<>();
+readingStatus.put(comicId, chapterInfo);
+
+Map<String, Object> updateData = new HashMap<>();
+updateData.put("reading_status", readingStatus);
+
+db.collection("users")
+    .document(uid)
+    .set(updateData, SetOptions.merge());
+```
+
+## 9. Lấy danh sách yêu thích và trạng thái đang đọc
+
+```java
+db.collection("users")
+    .document(uid)
+    .get()
+    .addOnSuccessListener(documentSnapshot -> {
+        List<String> favorites = (List<String>) documentSnapshot.get("favorites");
+        Map<String, Object> status = (Map<String, Object>) documentSnapshot.get("reading_status");
+    });
+```
+
+## 🔧 Cấu trúc Firestore mẫu
+
+### 📁 `comics` Collection
+
+```
 comics (collection)
  └── comicId (document)
      ├── title
@@ -66,11 +150,11 @@ comics (collection)
              └── created_at
 ```
 
-### Collection: `users`
+### 📁 `users` Collection
 
-```plaintext
+```
 users (collection)
- └── userId (trùng với Firebase Auth UID)
+ └── userId (UID từ FirebaseAuth)
      ├── favorites: [comicId1, comicId2, ...]
      └── reading_status:
          └── comicId:
@@ -78,99 +162,17 @@ users (collection)
              └── page_index: number
 ```
 
----
+## ✅ Ghi chú
 
-## 4. Cách lấy dữ liệu trong Android (Kotlin)
+- Luôn đảm bảo người dùng đã đăng nhập trước khi truy vấn Firestore.
+- Khi ghi dữ liệu mà không muốn ghi đè toàn bộ, luôn dùng `SetOptions.merge()`.
+- Bạn có thể test Firestore trên Firebase Console tab **Database**.
 
-### a. Lấy danh sách truyện
+## 🧪 Tài khoản Firebase demo
 
-```kotlin
-val db = FirebaseFirestore.getInstance()
-db.collection("comics")
-    .get()
-    .addOnSuccessListener { result ->
-        for (doc in result) {
-            val title = doc.getString("title")
-            // ...
-        }
-    }
-```
-
-### b. Lấy danh sách chapter
-
-```kotlin
-db.collection("comics")
-    .document(comicId)
-    .collection("chapters")
-    .get()
-    .addOnSuccessListener { result ->
-        for (doc in result) {
-            val title = doc.getString("title")
-        }
-    }
-```
-
-### c. Lấy nội dung một chapter
-
-```kotlin
-db.collection("comics")
-    .document(comicId)
-    .collection("chapters")
-    .document(chapterId)
-    .get()
-    .addOnSuccessListener { doc ->
-        val pages = doc.get("pages") as List<*>
-    }
-```
-
----
-
-## 5. Lưu truyện yêu thích
-
-```kotlin
-db.collection("users")
-    .document(uid)
-    .update("favorites", FieldValue.arrayUnion(comicId))
-```
-
-## 6. Cập nhật trạng thái đang đọc
-
-```kotlin
-val readingStatus = hashMapOf(
-    comicId to mapOf(
-        "chapter_id" to "chapter2",
-        "page_index" to 3
-    )
-)
-db.collection("users")
-    .document(uid)
-    .set(mapOf("reading_status" to readingStatus), SetOptions.merge())
-```
-
-## 7. Lấy danh sách truyện yêu thích và trạng thái đọc
-
-```kotlin
-db.collection("users")
-    .document(uid)
-    .get()
-    .addOnSuccessListener { doc ->
-        val favorites = doc.get("favorites") as? List<*>
-        val status = doc.get("reading_status") as? Map<*, *>
-    }
-```
-
----
-
-## 8. Lưu ý chung
-
-* Luôn đảm bảo người dùng đã login (FirebaseAuth)
-* Để tránh ghi đè dữ liệu, luôn dùng `SetOptions.merge()`
-* Có thể test dữ liệu trên Firestore bằng Firebase Console (tab Firestore Database)
-
----
-
-Bạn nào muốn test nhanh có thể dùng tài khoản demo 
-id:   `vYeqnac5MwhpbXi9ePxAd7lS5Ic2`
-mail: `user01@gmail.com` 
-pass: `123123`
+| Mục            | Giá trị                         |
+|----------------|----------------------------------|
+| UID            | `vYeqnac5MwhpbXi9ePxAd7lS5Ic2`   |
+| Email          | `user01@gmail.com`              |
+| Mật khẩu       | `123123`                        |
 
