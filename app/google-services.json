@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "93033337094",
+    "firebase_url": "https://ready-a0a44-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "ready-a0a44",
+    "storage_bucket": "ready-a0a44.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:93033337094:android:d7056d3c9ea8c3e8d00e87",
+        "android_client_info": {
+          "package_name": "com.readify.readify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMWBn9NvEEiHeVz9YGMEBo58MZQY3E69A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
