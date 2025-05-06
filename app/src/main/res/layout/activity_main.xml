@@ -1,13 +1,390 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    <!-- AppBar thứ hai (Readify + Search + Menu) -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:elevation="4dp"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/readifyTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="Readify"
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+        <ImageButton
+            android:id="@+id/btnMenu"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="end"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_menu"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:contentDescription="Menu" />
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end" />
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:elevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/topAppBar">
+
+        <!-- LinearLayout chứa cả hai nút Back và Menu -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_gravity="start"
+            android:paddingStart="16dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_back" />
+
+            <ImageButton
+                android:id="@+id/btnMenu1"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_menu"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:contentDescription="Menu" />
+        </LinearLayout>
+
+        <!-- TextView nằm ở giữa Toolbar -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Nhận xét của khách hàng"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <!-- Rating Section -->
+    <TextView
+        android:id="@+id/txtRatingScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="5.0"
+        android:textColor="@color/black"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <TextView
+        android:id="@+id/txtRatingLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Trong số 5"
+        android:textColor="@color/dark_gray"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtRatingScore" />
+
+    <TextView
+        android:id="@+id/txtReviewsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Nhận xét"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtRatingLabel" />
+
+    <!-- Rating Bar Chart -->
     <LinearLayout
+        android:id="@+id/ratingBarChart"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/txtRatingScore"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <!-- 5 Star Rating Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="★★★★★"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/rating_bar_background" />
+        </LinearLayout>
+
+        <!-- 4 Star Rating Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:text="★★★★"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/rating_bar_background" />
+        </LinearLayout>
+
+        <!-- 3 Star Rating Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:text="★★★"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/rating_bar_background" />
+        </LinearLayout>
+
+        <!-- 2 Star Rating Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:text="★★"
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/rating_bar_background" />
+        </LinearLayout>
+
+        <!-- 1 Star Rating Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:text="★"
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/rating_bar_background" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- ReviewRecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reviewRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/ratingSelection"
+        app:layout_constraintTop_toBottomOf="@id/txtReviewsLabel" />
+
+    <!-- Input Review Container -->
+    <LinearLayout
+        android:id="@+id/inputReviewContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/review_input_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/avatarImage"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/icon_avt"
+            android:contentDescription="User avatar" />
+
+        <EditText
+            android:id="@+id/editTextReview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="Nhập nhận xét của bạn"
+            android:inputType="textMultiLine"
+            android:lines="1"
+            android:maxLines="3"
+            android:textSize="14sp" />
+
+        <ImageButton
+            android:id="@+id/btnSendReview"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Send review"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_send" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ratingSelection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
+        android:background="@drawable/rating_stars_background"
+        android:padding="8dp"
+        app:layout_constraintBottom_toTopOf="@id/inputReviewContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+
+            android:id="@+id/star1"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="Rating star 1"
+            android:src="@drawable/ic_star_outline" />
+
+        <ImageView
+            android:id="@+id/star2"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="Rating star 2"
+            android:src="@drawable/ic_star_outline" />
+
+        <ImageView
+            android:id="@+id/star3"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="Rating star 3"
+            android:src="@drawable/ic_star_outline" />
+
+        <ImageView
+            android:id="@+id/star4"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="Rating star 4"
+            android:src="@drawable/ic_star_outline" />
+
+        <ImageView
+            android:id="@+id/star5"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="Rating star 5"
+            android:src="@drawable/ic_star_outline" />
+    </LinearLayout>
+    <!-- Rating Selection -->
+
 
         <!-- Section: Picks of the Week -->
         <TextView android:text="Picks of the week"
