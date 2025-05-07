@@ -1,9 +1,8 @@
 package com.readify.readify.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.readify.readify.R;
@@ -23,6 +22,10 @@ public class ForgotPassword extends AppCompatActivity {
         btnSubmit.setOnClickListener(v -> {
             String email = etEmail.getText().toString();
             // TODO: Gửi email đặt lại mật khẩu hoặc xử lý logic
+            // Sau khi gửi thành công, quay lại LoginActivity
+            Intent intent = new Intent(ForgotPassword.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 }

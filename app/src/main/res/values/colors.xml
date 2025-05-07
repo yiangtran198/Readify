@@ -5,8 +5,9 @@
     <color name="green">#008000</color>
     <color name="teal_custom">#2BACB0</color>
     <color name="backgr">#FFFBFB</color>
-    <color name="gray">#CCCCCC</color>
+    <color name="graay">#CCCCCC</color>
     <color name="gold">#FFCC00</color>
     <color name="dark_gray">#666666</color>
     <color name="gray">#999999</color>
+    <color name="whitegray">#F4EDED</color>
 </resources>

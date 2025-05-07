@@ -22,21 +22,23 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/btnMotivational"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Motivational" />
 
                 <Button
+                    android:id="@+id/btnBusiness"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Business" />
 
-                <!-- Add more buttons as needed -->
             </LinearLayout>
         </HorizontalScrollView>
 
         <!-- Picks of the Week -->
         <TextView
+            android:id="@+id/txtPicks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Picks of the week"
@@ -55,6 +57,7 @@
 
         <!-- Self-help -->
         <TextView
+            android:id="@+id/txtSelfHelp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Self-help"
@@ -73,6 +76,7 @@
 
         <!-- Popular Now -->
         <TextView
+            android:id="@+id/txtPopular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Popular now"
