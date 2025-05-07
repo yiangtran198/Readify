@@ -44,6 +44,8 @@ dependencies {
     // ✅ Firebase dependencies
     implementation("com.google.firebase:firebase-auth:22.1.1")
     implementation("com.google.firebase:firebase-firestore:24.8.1")
+    apply(plugin = "com.google.gms.google-services")
+
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")

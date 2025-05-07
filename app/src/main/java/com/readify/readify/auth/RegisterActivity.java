@@ -1,26 +1,40 @@
 package com.readify.readify.auth;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.readify.readify.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText etUsername, etEmail, etPassword, etConfirmPassword;
     private MaterialButton btnRegister;
     private TextView tvLogin;
 
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         etUsername = findViewById(R.id.etUsername);
         etEmail = findViewById(R.id.etEmail);
@@ -30,28 +44,47 @@ public class RegisterActivity extends AppCompatActivity {
         tvLogin = findViewById(R.id.tvLogin);
 
         btnRegister.setOnClickListener(v -> {
-            String username = etUsername.getText().toString();
-            String email = etEmail.getText().toString();
-            String password = etPassword.getText().toString();
-            String confirmPassword = etConfirmPassword.getText().toString();
+            String username = etUsername.getText().toString().trim();
+            String email = etEmail.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
+            String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-            // Validate password confirmation
-            if (password.equals(confirmPassword)) {
-                // Save username and password in SharedPreferences
-                SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("username", username);
-                editor.putString("password", password);
-                editor.apply();
-
-                // After registration, go to login screen
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-            } else {
-                // Passwords do not match, show an error
-                Toast.makeText(RegisterActivity.this, "Mật khẩu không khớp", Toast.LENGTH_SHORT).show();
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            if (!password.equals(confirmPassword)) {
+                Toast.makeText(this, "Mật khẩu không khớp", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            String uid = task.getResult().getUser().getUid();
+
+                            // Lưu tên người dùng vào Firestore
+                            Map<String, Object> userData = new HashMap<>();
+                            userData.put("name", username);
+                            userData.put("created_at", FieldValue.serverTimestamp());
+
+                            db.collection("users")
+                                    .document(uid)
+                                    .set(userData, SetOptions.merge())
+                                    .addOnSuccessListener(unused -> {
+                                        Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(this, LoginActivity.class));
+                                        finish();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(this, "Lỗi lưu dữ liệu người dùng: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    });
+
+                        } else {
+                            Toast.makeText(this, "Đăng ký thất bại: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
         });
 
         tvLogin.setOnClickListener(v -> {

@@ -1,19 +1,20 @@
 package com.readify.readify.auth;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.readify.readify.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.readify.readify.auth.HomeActivity;
-
-import androidx.appcompat.app.AppCompatActivity;
+import com.readify.readify.R;
 
 public class LoginActivity extends AppCompatActivity {
     private TextInputEditText etUsername, etPassword;
@@ -21,10 +22,14 @@ public class LoginActivity extends AppCompatActivity {
     private MaterialButton btnLogin;
     private TextView tvForgotPassword, tvSignUp;
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+
+        mAuth = FirebaseAuth.getInstance();
 
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
@@ -34,25 +39,27 @@ public class LoginActivity extends AppCompatActivity {
         tvSignUp = findViewById(R.id.tvSignUp);
 
         btnLogin.setOnClickListener(v -> {
-            String username = etUsername.getText().toString().trim();
+            String email = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
-            // Check if the entered username and password match what is saved in SharedPreferences
-            SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-            String savedUsername = sharedPreferences.getString("username", "");
-            String savedPassword = sharedPreferences.getString("password", "");
-
-            if (username.equals(savedUsername) && password.equals(savedPassword)) {
-                getSharedPreferences("AppPrefs", MODE_PRIVATE)
-                        .edit()
-                        .putBoolean("isLoggedIn", true)
-                        .apply();
-                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                startActivity(intent);
-                finish();
-            } else {
-                Toast.makeText(LoginActivity.this, "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập đầy đủ email và mật khẩu", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        } else {
+                            Toast.makeText(this, "Đăng nhập thất bại: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
         });
 
         tvForgotPassword.setOnClickListener(v -> {
@@ -62,5 +69,16 @@ public class LoginActivity extends AppCompatActivity {
         tvSignUp.setOnClickListener(v -> {
             startActivity(new Intent(this, RegisterActivity.class));
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Tự động vào app nếu đã đăng nhập trước đó
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            startActivity(new Intent(this, HomeActivity.class));
+            finish();
+        }
     }
 }

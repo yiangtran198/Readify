@@ -1,10 +1,12 @@
 package com.readify.readify.auth;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
-import com.readify.readify.auth.LoginActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -12,20 +14,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Kiểm tra trạng thái đăng nhập
-        SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (isLoggedIn) {
-            // Người dùng đã đăng nhập, mở trang chủ
-            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-            startActivity(intent);
-            finish();
+        if (currentUser != null) {
+            // Người dùng đã đăng nhập
+            startActivity(new Intent(MainActivity.this, HomeActivity.class));
         } else {
-            // Người dùng chưa đăng nhập, mở màn hình đăng nhập
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
+            // Người dùng chưa đăng nhập
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
+        finish();
     }
 }
