@@ -7,6 +7,7 @@ Tài liệu này hướng dẫn sử dụng Firebase với Java để:
 - Đăng nhập & đăng ký người dùng bằng email
 - Lưu danh sách truyện, chapter, trạng thái đang đọc, và yêu thích
 - Truy xuất dữ liệu từ Firestore
+- Chỉnh sửa hồ sơ người dùng
 
 ---
 
@@ -15,13 +16,10 @@ Tài liệu này hướng dẫn sử dụng Firebase với Java để:
 ```java
 FirebaseAuth.getInstance()
     .createUserWithEmailAndPassword(email, password)
-    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-        @Override
-        public void onComplete(@NonNull Task<AuthResult> task) {
-            if (task.isSuccessful()) {
-                String uid = task.getResult().getUser().getUid();
-                // Lưu thêm thông tin người dùng nếu cần
-            }
+    .addOnCompleteListener(task -> {
+        if (task.isSuccessful()) {
+            String uid = task.getResult().getUser().getUid();
+            // Gợi ý: Sau khi tạo, bạn có thể thêm name, birthday, avatar tại đây
         }
     });
 ```
@@ -31,13 +29,9 @@ FirebaseAuth.getInstance()
 ```java
 FirebaseAuth.getInstance()
     .signInWithEmailAndPassword(email, password)
-    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-        @Override
-        public void onComplete(@NonNull Task<AuthResult> task) {
-            if (task.isSuccessful()) {
-                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                // Sử dụng UID để truy xuất dữ liệu cá nhân
-            }
+    .addOnCompleteListener(task -> {
+        if (task.isSuccessful()) {
+            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
     });
 ```
@@ -48,18 +42,15 @@ FirebaseAuth.getInstance()
 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 ```
 
-> 🔐 UID này sẽ là khóa chính trong collection `users`.
-
 ## 4. Lấy danh sách truyện
 
 ```java
 FirebaseFirestore db = FirebaseFirestore.getInstance();
 db.collection("comics")
     .get()
-    .addOnSuccessListener(queryDocumentSnapshots -> {
-        for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+    .addOnSuccessListener(query -> {
+        for (DocumentSnapshot doc : query.getDocuments()) {
             String title = doc.getString("title");
-            // Xử lý dữ liệu
         }
     });
 ```
@@ -71,8 +62,8 @@ db.collection("comics")
     .document(comicId)
     .collection("chapters")
     .get()
-    .addOnSuccessListener(queryDocumentSnapshots -> {
-        for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+    .addOnSuccessListener(query -> {
+        for (DocumentSnapshot doc : query.getDocuments()) {
             String title = doc.getString("title");
         }
     });
@@ -86,8 +77,8 @@ db.collection("comics")
     .collection("chapters")
     .document(chapterId)
     .get()
-    .addOnSuccessListener(documentSnapshot -> {
-        List<String> pages = (List<String>) documentSnapshot.get("pages");
+    .addOnSuccessListener(doc -> {
+        List<String> pages = (List<String>) doc.get("pages");
     });
 ```
 
@@ -109,12 +100,9 @@ chapterInfo.put("page_index", 3);
 Map<String, Object> readingStatus = new HashMap<>();
 readingStatus.put(comicId, chapterInfo);
 
-Map<String, Object> updateData = new HashMap<>();
-updateData.put("reading_status", readingStatus);
-
 db.collection("users")
     .document(uid)
-    .set(updateData, SetOptions.merge());
+    .set(Collections.singletonMap("reading_status", readingStatus), SetOptions.merge());
 ```
 
 ## 9. Lấy danh sách yêu thích và trạng thái đang đọc
@@ -123,56 +111,81 @@ db.collection("users")
 db.collection("users")
     .document(uid)
     .get()
-    .addOnSuccessListener(documentSnapshot -> {
-        List<String> favorites = (List<String>) documentSnapshot.get("favorites");
-        Map<String, Object> status = (Map<String, Object>) documentSnapshot.get("reading_status");
+    .addOnSuccessListener(doc -> {
+        List<String> favorites = (List<String>) doc.get("favorites");
+        Map<String, Object> status = (Map<String, Object>) doc.get("reading_status");
     });
 ```
+
+## 10. Cập nhật hồ sơ người dùng (Profile)
+
+```java
+Map<String, Object> profileUpdate = new HashMap<>();
+profileUpdate.put("name", "Nguyễn Văn A");
+profileUpdate.put("birthday", "2000-01-01");
+profileUpdate.put("avatar", "https://i.pravatar.cc/150?img=10");
+
+db.collection("users")
+    .document(uid)
+    .set(profileUpdate, SetOptions.merge());
+```
+
+---
 
 ## 🔧 Cấu trúc Firestore mẫu
 
 ### 📁 `comics` Collection
 
 ```
-comics (collection)
- └── comicId (document)
+comics
+ └── comicId
      ├── title
      ├── author
      ├── description
-     ├── categories (array)
-     ├── status
-     ├── created_at
+     ├── categories: [string]
+     ├── status: string
+     ├── created_at: Timestamp
      └── chapters (subcollection)
-         └── chapterId (document)
+         └── chapterId
              ├── title
              ├── chapter_number
-             ├── pages (array of string)
+             ├── pages: [string]
              └── created_at
 ```
 
 ### 📁 `users` Collection
 
 ```
-users (collection)
+users
  └── userId (UID từ FirebaseAuth)
-     ├── favorites: [comicId1, comicId2, ...]
-     └── reading_status:
+     ├── name: string
+     ├── birthday: string (YYYY-MM-DD)
+     ├── avatar: string (URL)
+     ├── favorites: [comicId]
+     ├── reading_status:
          └── comicId:
              ├── chapter_id: string
              └── page_index: number
+     └── created_at: Timestamp
 ```
+
+---
 
 ## ✅ Ghi chú
 
-- Luôn đảm bảo người dùng đã đăng nhập trước khi truy vấn Firestore.
-- Khi ghi dữ liệu mà không muốn ghi đè toàn bộ, luôn dùng `SetOptions.merge()`.
-- Bạn có thể test Firestore trên Firebase Console tab **Database**.
+- Luôn dùng `SetOptions.merge()` để tránh ghi đè toàn bộ document khi cập nhật một phần.
+- Với người dùng mới, bạn nên thiết lập các trường `name`, `avatar`, `birthday` sau khi tạo tài khoản.
+- Firestore không giới hạn số lượng trường trong document, nhưng nên tối ưu cho mobile.
+
+---
 
 ## 🧪 Tài khoản Firebase demo
 
-| Mục            | Giá trị                         |
-|----------------|----------------------------------|
-| UID            | `vYeqnac5MwhpbXi9ePxAd7lS5Ic2`   |
-| Email          | `user01@gmail.com`              |
-| Mật khẩu       | `123123`                        |
-
+| Mục       | Giá trị                             |
+|-----------|--------------------------------------|
+| UID       | `vYeqnac5MwhpbXi9ePxAd7lS5Ic2`       |
+| Email     | `user01@gmail.com`                  |
+| Mật khẩu  | `123123`                            |
+| Tên       | `Nguyễn Văn A`                      |
+| Avatar    | `https://i.pravatar.cc/150?img=10`  |
+| Birthday  | `2000-01-01`                        |
