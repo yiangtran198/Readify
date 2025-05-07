@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
         reviewList = new ArrayList<>();
 
         // Add sample reviews as seen in the image
-        reviewList.add(new Review("Trung Pham", "Rất hay và tuyệt vời, đã làm thử hai sản phẩm hôm nay rất ngon", 5, "17 thg 12 2024"));
+        reviewList.add(new Review("Trung Pham", "Rất hay và tuyệt vời, đã đọc lại lần thứ vẫn hay như lần đầu", 5, "17 thg 12 2024"));
         reviewList.add(new Review("Trung Anh", "Rất hay và tuyệt vời...", 5, "2 thg 12 2024"));
         reviewList.add(new Review("Elon Musk", "Very good", 5, "26 thg 10 2024"));
         reviewList.add(new Review("Aron", "ok", 5, "09 thg 05 2024"));
-        reviewList.add(new Review("Quốc Cường", "tạm hay đấy", 5, "20 thg 06 2024"));
+        reviewList.add(new Review("Quốc Cường", "Sách hay lắm", 5, "20 thg 06 2024"));
         reviewList.add(new Review("Dieu Dieu", "10 điêm", 5, "04 thg 07 2024"));
 
         reviewAdapter = new ReviewAdapter(reviewList);
