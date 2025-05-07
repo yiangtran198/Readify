@@ -16,12 +16,25 @@ Tài liệu này hướng dẫn sử dụng Firebase với Java để:
 ```java
 FirebaseAuth.getInstance()
     .createUserWithEmailAndPassword(email, password)
-    .addOnCompleteListener(task -> {
-        if (task.isSuccessful()) {
-            String uid = task.getResult().getUser().getUid();
-            // Gợi ý: Sau khi tạo, bạn có thể thêm name, birthday, avatar tại đây
+    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task) {
+            if (task.isSuccessful()) {
+                String uid = task.getResult().getUser().getUid();
+
+                // Lưu tên người dùng vào Firestore
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                Map<String, Object> userData = new HashMap<>();
+                userData.put("name", "Tên người dùng"); // lấy từ EditText
+                userData.put("created_at", FieldValue.serverTimestamp());
+
+                db.collection("users")
+                    .document(uid)
+                    .set(userData, SetOptions.merge());
+            }
         }
     });
+
 ```
 
 ## 2. Đăng nhập người dùng
@@ -32,6 +45,23 @@ FirebaseAuth.getInstance()
     .addOnCompleteListener(task -> {
         if (task.isSuccessful()) {
             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
+    });
+```
+
+## 2. Lấy lại mật khẩu
+
+```java
+FirebaseAuth.getInstance()
+    .sendPasswordResetEmail(email)
+    .addOnCompleteListener(new OnCompleteListener<Void>() {
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+            if (task.isSuccessful()) {
+                Log.d("ResetPassword", "Email đặt lại mật khẩu đã được gửi.");
+            } else {
+                Log.e("ResetPassword", "Không thể gửi email: " + task.getException().getMessage());
+            }
         }
     });
 ```
