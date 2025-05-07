@@ -15,6 +15,7 @@ import com.readify.readify.Model.Review;
 import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
+
     private List<Review> reviewList;
 
     public ReviewAdapter(List<Review> reviewList) {
