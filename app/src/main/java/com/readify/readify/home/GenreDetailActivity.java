@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.readify.readify.R;
+import com.readify.readify.home.model.Book;
+import com.readify.readify.home.adapter.BookAdapter;
 
 import java.util.ArrayList;
 
@@ -28,7 +30,6 @@ public class GenreDetailActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerBooks);
         titleView = findViewById(R.id.textGenreTitle);
         descriptionView = findViewById(R.id.textGenreDescription);
-        bookmarkIcon = findViewById(R.id.bookmarkIcon);
         ImageView backButton = findViewById(R.id.backButton);
 
         // Nút Back
@@ -58,7 +59,12 @@ public class GenreDetailActivity extends AppCompatActivity {
         }
 
         if (books != null) {
-            recyclerView.setAdapter(new BookAdapter(this, books));
+            recyclerView.setAdapter(new BookAdapter(this, books, new BookAdapter.OnBookClickListener() {
+                @Override
+                public void onBookClick(Book book) {
+
+                }
+            }));
         }
     }
 

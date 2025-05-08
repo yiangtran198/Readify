@@ -3,13 +3,12 @@ package com.readify.readify.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import com.readify.readify.R;
-import com.readify.readify.home.Book;
-import com.readify.readify.home.GenreDetailActivity;
+import com.readify.readify.home.model.Book;
+import com.readify.readify.home.data.SampleData;
 
 import java.util.ArrayList;
 public class SearchActivity extends AppCompatActivity{
@@ -35,7 +34,7 @@ public class SearchActivity extends AppCompatActivity{
 
             // Giả lập danh sách (sau này thay bằng API hoặc Firebase)
             ArrayList<Book> filtered = new ArrayList<>();
-            for (Book book : SampleData.books) {
+            for (Book book : SampleData.getBooks("Picks")) {
                 if (mode.equals("both") && (book.title.toLowerCase().contains(query) || book.author.toLowerCase().contains(query))) {
                     filtered.add(book);
                 } else if (mode.equals("title") && book.title.toLowerCase().contains(query)) {

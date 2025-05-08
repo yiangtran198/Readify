@@ -5,10 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.readify.readify.auth.HomeActivity;
 import com.readify.readify.auth.LoginActivity;
-import com.readify.readify.home.FragmentHome;
-import com.readify.readify.home.FragmentHome;
+import com.readify.readify.home.fragment.FragmentHome;
 
 public class MainActivity extends AppCompatActivity {
 

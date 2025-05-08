@@ -5,87 +5,117 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:padding="16dp"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Horizontal Tags -->
-        <HorizontalScrollView
+        <!-- Category Tags (Grid) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fillViewport="true"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btnMotivational"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Motivational" />
-
-                <Button
-                    android:id="@+id/btnBusiness"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Business" />
-
-            </LinearLayout>
-        </HorizontalScrollView>
+            android:layout_marginBottom="8dp"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:nestedScrollingEnabled="false"/>
 
         <!-- Picks of the Week -->
-        <TextView
-            android:id="@+id/txtPicks"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Picks of the week"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+            <TextView
+                android:id="@+id/txtPicks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Picks of the week"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#000000" />
+            <TextView
+                android:id="@+id/txtSeeAllPicks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="See all"
+                android:textColor="#888888"
+                android:textSize="14sp"
+                android:paddingLeft="8dp"/>
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerPicks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="Weekly book picks list"
-            android:nestedScrollingEnabled="false" />
+            android:nestedScrollingEnabled="false"
+            android:layout_marginBottom="8dp"/>
 
         <!-- Self-help -->
-        <TextView
-            android:id="@+id/txtSelfHelp"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Self-help"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+            <TextView
+                android:id="@+id/txtSelfHelp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Self-help"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#000000" />
+            <TextView
+                android:id="@+id/txtSeeAllSelfHelp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="See all"
+                android:textColor="#888888"
+                android:textSize="14sp"
+                android:paddingLeft="8dp"/>
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerSelfHelp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="Self-help books list"
-            android:nestedScrollingEnabled="false" />
+            android:nestedScrollingEnabled="false"
+            android:layout_marginBottom="8dp"/>
 
         <!-- Popular Now -->
-        <TextView
-            android:id="@+id/txtPopular"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Popular now"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#000000"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp" />
-
+            android:layout_marginBottom="8dp">
+            <TextView
+                android:id="@+id/txtPopular"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Popular now"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#000000" />
+            <TextView
+                android:id="@+id/txtSeeAllPopular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="See all"
+                android:textColor="#888888"
+                android:textSize="14sp"
+                android:paddingLeft="8dp"/>
+        </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerPopular"
             android:layout_width="match_parent"

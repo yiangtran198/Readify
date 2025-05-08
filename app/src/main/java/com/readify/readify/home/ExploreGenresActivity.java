@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.readify.readify.R;
+import com.readify.readify.home.adapter.GenreAdapter;
 
 import java.util.List;
 import java.util.Arrays;

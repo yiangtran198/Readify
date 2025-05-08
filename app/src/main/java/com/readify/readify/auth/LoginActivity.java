@@ -6,14 +6,13 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.readify.readify.auth.HomeActivity;
+import com.readify.readify.home.HomeActivity;
 import com.readify.readify.R;
 
 public class LoginActivity extends AppCompatActivity {

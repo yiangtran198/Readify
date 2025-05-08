@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.readify.readify">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -44,7 +46,7 @@
 
         <!-- Home Activity -->
         <activity
-            android:name=".auth.HomeActivity"
+            android:name=".home.HomeActivity"
             android:exported="true">
         </activity>
 

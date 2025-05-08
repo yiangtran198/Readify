@@ -35,13 +35,7 @@
             android:gravity="center"
             android:textColor="#000000" />
 
-        <ImageView
-            android:id="@+id/bookmarkIcon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/bookmark"
-            app:tint="#000000"
-            android:contentDescription="Bookmark" />
+
     </LinearLayout>
 
     <!-- Description -->
