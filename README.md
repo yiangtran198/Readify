@@ -1,5 +1,16 @@
 figma link: https://www.figma.com/design/PbSsCJbh6pfmRdAxOfBpQ1/LTUD-Readify?node-id=0-1&p=f&t=MJUbfyn4SCof73h0-0
 
+## 🧪 Tài khoản Firebase demo
+
+| Mục       | Giá trị                             |
+|-----------|--------------------------------------|
+| UID       | `vYeqnac5MwhpbXi9ePxAd7lS5Ic2`       |
+| Email     | `user01@gmail.com`                  |
+| Mật khẩu  | `123123`                            |
+| Tên       | `Nguyễn Văn A`                      |
+| Avatar    | `https://i.pravatar.cc/150?img=10`  |
+| Birthday  | `2000-01-01`                        |
+
 # 📚 Hướng dẫn tích hợp Firebase cho ứng dụng đọc truyện (Java)
 
 Tài liệu này hướng dẫn sử dụng Firebase với Java để:
@@ -209,13 +220,4 @@ users
 
 ---
 
-## 🧪 Tài khoản Firebase demo
 
-| Mục       | Giá trị                             |
-|-----------|--------------------------------------|
-| UID       | `vYeqnac5MwhpbXi9ePxAd7lS5Ic2`       |
-| Email     | `user01@gmail.com`                  |
-| Mật khẩu  | `123123`                            |
-| Tên       | `Nguyễn Văn A`                      |
-| Avatar    | `https://i.pravatar.cc/150?img=10`  |
-| Birthday  | `2000-01-01`                        |
