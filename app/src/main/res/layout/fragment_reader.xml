@@ -1,0 +1,87 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutReader"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <!-- Thanh điều khiển phía trên -->
+    <RelativeLayout
+        android:id="@+id/layoutControlsTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:padding="8dp">
+
+        <!-- Nút Back bên trái -->
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/arrow_back" />
+
+        <!-- Nhóm nút icon bên phải -->
+        <LinearLayout
+            android:id="@+id/layoutRightIcons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="4dp">
+
+            <ImageButton
+                android:id="@+id/btnFontDown"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Giảm cỡ chữ"
+                android:src="@drawable/text_decrease"
+                />
+
+            <ImageButton
+                android:id="@+id/btnFontUp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Tăng cỡ chữ"
+                android:src="@drawable/text_increase"
+                />
+
+            <ImageButton
+                android:id="@+id/btnToggleMode"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Chế độ tối"
+                android:src="@drawable/dark_mode"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- ViewPager nằm giữa -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/layoutControlsTop"
+        android:layout_above="@id/tvPageNumber" />
+
+    <!-- Số trang dưới cùng -->
+    <TextView
+        android:id="@+id/tvPageNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1/3"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="12dp" />
+</RelativeLayout>

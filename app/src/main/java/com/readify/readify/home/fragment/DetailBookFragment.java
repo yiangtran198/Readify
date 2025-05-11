@@ -17,6 +17,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.readify.readify.R;
 import com.readify.readify.comment.fragment.FragmentComment;
 import com.readify.readify.home.model.Book;
+import com.readify.readify.reader.fragment.FragmentReader;
+
+import io.grpc.okhttp.internal.framed.FrameReader;
 
 public class DetailBookFragment extends Fragment {
     private Book book;
@@ -63,9 +66,20 @@ public class DetailBookFragment extends Fragment {
 
         // Xử lý click các nút
         Button btnRead = view.findViewById(R.id.btnRead);
+        btnRead.setOnClickListener(v -> {
+            FragmentReader fragment = new FragmentReader();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("book", book);
+            fragment.setArguments(bundle);
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         Button btnFollow = view.findViewById(R.id.btnFollow);
         Button btnFavorite = view.findViewById(R.id.btnFavorite);
-        btnRead.setOnClickListener(v -> Toast.makeText(getContext(), "Đọc sách: " + book.title, Toast.LENGTH_SHORT).show());
         btnFollow.setOnClickListener(v -> Toast.makeText(getContext(), "Theo dõi: " + book.title, Toast.LENGTH_SHORT).show());
         btnFavorite.setOnClickListener(v -> Toast.makeText(getContext(), "Yêu thích: " + book.title, Toast.LENGTH_SHORT).show());
 
