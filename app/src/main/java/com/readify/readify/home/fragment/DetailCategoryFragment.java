@@ -16,6 +16,8 @@ import com.readify.readify.R;
 import com.readify.readify.home.adapter.SearchBookAdapter;
 import com.readify.readify.home.data.SampleData;
 import com.readify.readify.home.model.Book;
+import com.readify.readify.repository.BookRepository;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,10 +109,11 @@ public class DetailCategoryFragment extends Fragment {
             }
         });
 
-        // List sách mẫu (lọc theo category nếu có)
-        List<Book> books = getBooksForCategory(categoryName);
-        recyclerBooks.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerBooks.setAdapter(new SearchBookAdapter(getContext(), books, book -> openBookDetail(book)));
+        List<Book> books = BookRepository.getInstance().getBooks();
+        if (books != null) {
+            recyclerBooks.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerBooks.setAdapter(new SearchBookAdapter(getContext(), books, book -> openBookDetail(book)));
+        }
 
         btnBack.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
         return view;
@@ -122,16 +125,6 @@ public class DetailCategoryFragment extends Fragment {
             return "A classic stands the test of time. The work is usually considered to be a representation of the period in which it was written; and the work merits lasting recognition. In other words, if the book was published in the recent past, the work is not a classic. A classic has a certain universal appeal. Great works of literature touch us to our very core beings--partly because they integrate themes that are understood by readers from a wide range of backgrounds and levels of experience. Themes of love, hate, death, life, and faith touch upon some of our most basic emotional responses. Although the term is often associated with the Western canon, it can be applied to works of literature from all traditions, such as the Chinese classics or the Indian Vedas.";
         }
         return "This is a description for " + category + ".";
-    }
-
-    private List<Book> getBooksForCategory(String category) {
-        // Demo: trả về tất cả sách, bạn có thể lọc theo category nếu có dữ liệu
-        List<Book> all = new ArrayList<>();
-        all.addAll(SampleData.getBooks("Picks"));
-        all.addAll(SampleData.getBooks("SelfHelp"));
-        all.addAll(SampleData.getBooks("Popular"));
-        // TODO: Lọc theo category nếu có mapping
-        return all;
     }
 
     private void openBookDetail(Book book) {

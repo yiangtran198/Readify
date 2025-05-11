@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.readify.readify.R;
 import com.readify.readify.home.model.Book;
 
@@ -35,12 +37,9 @@ public class PopularBookAdapter extends RecyclerView.Adapter<PopularBookAdapter.
         holder.txtIndex.setText((position + 1) + ".");
         holder.txtTitle.setText(book.title);
         holder.txtAuthor.setText(book.author);
-        int resId = context.getResources().getIdentifier(book.image, "drawable", context.getPackageName());
-        if (resId != 0) {
-            holder.imgCover.setImageResource(resId);
-        } else {
-            holder.imgCover.setImageResource(R.drawable.bg_book_cover_rounded);
-        }
+        Glide.with(holder.itemView.getContext())
+                .load(book.image)
+                .into(holder.imgCover);
     }
 
     @Override

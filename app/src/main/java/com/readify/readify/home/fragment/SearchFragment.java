@@ -23,6 +23,8 @@ import com.readify.readify.home.adapter.SearchBookAdapter;
 import com.readify.readify.home.data.SampleData;
 import com.readify.readify.home.model.Book;
 import com.readify.readify.home.model.Category;
+import com.readify.readify.repository.BookRepository;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,13 +108,13 @@ public class SearchFragment extends Fragment {
 
         // Setup search result list
         recyclerSearchResult.setLayoutManager(new LinearLayoutManager(getContext()));
-        allBooks = SampleData.getBooks("Picks");
-        allBooks.addAll(SampleData.getBooks("SelfHelp"));
-        allBooks.addAll(SampleData.getBooks("Popular"));
-        filteredBooks = new ArrayList<>(allBooks);
-        searchBookAdapter = new SearchBookAdapter(getContext(), filteredBooks, book -> openBookDetail(book));
-        recyclerSearchResult.setAdapter(searchBookAdapter);
-
+        List<Book> books = BookRepository.getInstance().getBooks();
+        if (books != null) {
+            allBooks = books;
+            filteredBooks = new ArrayList<>(books);
+            searchBookAdapter = new SearchBookAdapter(getContext(), filteredBooks, book -> openBookDetail(book));
+            recyclerSearchResult.setAdapter(searchBookAdapter);
+        }
         // Search text change
         edtSearch.addTextChangedListener(new TextWatcher() {
             @Override
