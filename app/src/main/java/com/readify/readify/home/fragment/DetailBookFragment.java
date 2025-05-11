@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.readify.readify.R;
+import com.readify.readify.comment.fragment.FragmentComment;
 import com.readify.readify.home.model.Book;
 
 public class DetailBookFragment extends Fragment {
@@ -58,6 +59,8 @@ public class DetailBookFragment extends Fragment {
                     .into(imgBookCover);
         }
 
+
+
         // Xử lý click các nút
         Button btnRead = view.findViewById(R.id.btnRead);
         Button btnFollow = view.findViewById(R.id.btnFollow);
@@ -66,6 +69,15 @@ public class DetailBookFragment extends Fragment {
         btnFollow.setOnClickListener(v -> Toast.makeText(getContext(), "Theo dõi: " + book.title, Toast.LENGTH_SHORT).show());
         btnFavorite.setOnClickListener(v -> Toast.makeText(getContext(), "Yêu thích: " + book.title, Toast.LENGTH_SHORT).show());
 
+        Button btnComment = view.findViewById(R.id.txtReviewTitle);
+        btnComment.setOnClickListener(v -> {
+            FragmentComment fragment = new FragmentComment();
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
         return view;
     }
 }

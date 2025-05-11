@@ -166,16 +166,16 @@
             android:textSize="14sp"
             android:layout_marginBottom="16dp"/>
 
-        <!-- Customer Reviews -->
-        <TextView
+        <Button
             android:id="@+id/txtReviewTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nhận xét của khách hàng >"
             android:textStyle="bold"
-            android:textColor="#222222"
+            android:textColor="#ffffff"
+            android:backgroundTint="#6EC6CA"
             android:textSize="15sp"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerReviews"
