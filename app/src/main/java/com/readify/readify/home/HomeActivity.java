@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -19,10 +20,12 @@ import com.readify.readify.home.fragment.AllCategoryFragment;
 import com.readify.readify.home.fragment.DetailCategoryFragment;
 import com.readify.readify.home.fragment.FragmentHome;  // Import FragmentHome
 import com.readify.readify.home.fragment.SearchFragment;
+import com.readify.readify.profile.SettingsFragment;
+import com.readify.readify.reader.fragment.FragmentReader;
 
 public class HomeActivity extends AppCompatActivity {
-    private Button btnLogout;
     private ImageView ivSearch;
+    private ImageButton btnMenu;
     private LinearLayout header;
     private FirebaseAuth mAuth;
 
@@ -48,18 +51,18 @@ public class HomeActivity extends AppCompatActivity {
             finish();  // Close HomeActivity
         }
 
-        btnLogout = findViewById(R.id.btnLogout);
         ivSearch = findViewById(R.id.ivSearch);
+        btnMenu = findViewById(R.id.ivMenu);
 
-        // Logout functionality
-        btnLogout.setOnClickListener(v -> {
-            // Log out user and redirect to login screen
-            mAuth.signOut();
-
-            // Go back to login screen
-            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();  // Close HomeActivity
+        btnMenu.setOnClickListener(v -> {
+            SettingsFragment fragment = new SettingsFragment();
+            Bundle bundle = new Bundle();
+            fragment.setArguments(bundle);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
         ivSearch.setOnClickListener(new View.OnClickListener() {
