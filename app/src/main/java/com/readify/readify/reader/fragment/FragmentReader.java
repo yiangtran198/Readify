@@ -117,19 +117,8 @@ public class FragmentReader extends Fragment {
         });
 
 
-
+        // call number of page
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-//        btnPin.setOnClickListener(v -> {
-//            isNightMode = !isNightMode;
-//            layoutReader.setBackgroundColor(isNightMode ? 0xFF1E1E1E : 0xFFFFFFFF);
-//            int tintColor = ContextCompat.getColor(requireContext(), isNightMode ? R.color.text_light_gray : R.color. text_dark_gray);
-//            btnFontUp.setImageTintList(ColorStateList.valueOf(tintColor));
-//            btnFontDown.setImageTintList(ColorStateList.valueOf(tintColor));
-//            btnToggleMode.setImageResource(isNightMode ? R.drawable.light_mode : R.drawable.dark_mode);
-//
-//            adapter.setNightMode(isNightMode);
-//        });
-
         if (book != null && currentUser != null) {
             String uid = currentUser.getUid();
             FirebaseFirestore.getInstance()
@@ -146,7 +135,7 @@ public class FragmentReader extends Fragment {
                                     if (pageObj instanceof Number) {
                                         currentPageRead = ((Number) pageObj).intValue();
                                         if (viewPager.getAdapter() != null) {
-                                            viewPager.setCurrentItem(currentPageRead-1, false);
+                                            viewPager.setCurrentItem(currentPageRead-1, true);
                                         }
                                     }
                                     break;
@@ -157,11 +146,12 @@ public class FragmentReader extends Fragment {
         }
 
 
+        // call firebase save current page
         btnPin.setOnClickListener(v -> {
             if (currentUser == null) return;
             String uid = currentUser.getUid();
-            int currentPage = currentPageRead; // truyền từ đâu đó vào
-            String bookId = book.id;
+            int currentPage = currentPageRead; // số trang hiện tại
+            String bookId = book.id;    // id sách để lưu số trang
 
             DocumentReference docRef = db.collection("users").document(uid);
             docRef.get().addOnSuccessListener(documentSnapshot -> {

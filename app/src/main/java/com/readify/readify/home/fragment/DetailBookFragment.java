@@ -63,7 +63,7 @@ public class DetailBookFragment extends Fragment {
         if (book != null) {
             txtBookTitle.setText(book.title);
             txtBookAuthor.setText("by " + book.author);
-            txtBookInfo.setText("Sách\nTiếng anh · " + book.pages.size() + " trang");
+            txtBookInfo.setText("Sách\n" + book.pages.size() + " trang");
             txtBookDescription.setText("Mô tả sách: " + book.description);
 
             Glide.with(requireContext())
@@ -74,17 +74,6 @@ public class DetailBookFragment extends Fragment {
                             .error(R.drawable.bg_book_cover_rounded))
                     .into(imgBookCover);
         }
-
-//        btnRead.setOnClickListener(v -> {
-//            FragmentReader fragment = new FragmentReader();
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("book", book);
-//            fragment.setArguments(bundle);
-//            getParentFragmentManager().beginTransaction()
-//                    .replace(R.id.fragment_container, fragment)
-//                    .addToBackStack(null)
-//                    .commit();
-//        });
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
