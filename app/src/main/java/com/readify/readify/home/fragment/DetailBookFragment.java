@@ -59,12 +59,14 @@ public class DetailBookFragment extends Fragment {
         Button btnRead = view.findViewById(R.id.btnRead);
         btnFollow = view.findViewById(R.id.btnFollow);
         btnFavorite = view.findViewById(R.id.btnFavorite);
+        TextView txtGenre = view.findViewById(R.id.txtGenre);
 
         if (book != null) {
             txtBookTitle.setText(book.title);
             txtBookAuthor.setText("by " + book.author);
-            txtBookInfo.setText("Sách\n" + book.pages.size() + " trang");
-            txtBookDescription.setText("Mô tả sách: " + book.description);
+            txtBookInfo.setText(book.status+ "\n" + book.pages.size() + " trang");
+            txtBookDescription.setText(book.description);
+            txtGenre.setText(String.join(", ", book.categories));
 
             Glide.with(requireContext())
                     .load(book.image)
