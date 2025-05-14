@@ -75,6 +75,10 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
             holder.bookInfoLayout.setVisibility(View.VISIBLE);
             holder.tvBookTitle.setText(book.title != null ? book.title : "");
             holder.tvBookAuthor.setText(book.author != null ? book.author : "");
+            holder.tvPageNumber.setText(
+                    (book != null && book.pages != null) ? String.valueOf(book.pages.size()) : ""
+            );
+
         } else {
             holder.bookInfoLayout.setVisibility(View.GONE);
         }
@@ -92,13 +96,14 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
     public static class BookViewHolder extends RecyclerView.ViewHolder {
         ImageView imgCover;
         LinearLayout bookInfoLayout;
-        TextView tvBookTitle, tvBookAuthor;
+        TextView tvBookTitle, tvBookAuthor, tvPageNumber;
         public BookViewHolder(@NonNull View itemView) {
             super(itemView);
             imgCover = itemView.findViewById(R.id.imgBookCover);
             bookInfoLayout = itemView.findViewById(R.id.bookInfoLayout);
             tvBookTitle = itemView.findViewById(R.id.tvBookTitle);
             tvBookAuthor = itemView.findViewById(R.id.tvBookAuthor);
+            tvPageNumber = itemView.findViewById(R.id.tvPageNumber);
         }
     }
 }
