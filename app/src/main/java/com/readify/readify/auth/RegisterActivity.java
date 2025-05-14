@@ -1,18 +1,20 @@
 package com.readify.readify.auth;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.readify.readify.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -62,11 +64,25 @@ public class RegisterActivity extends AppCompatActivity {
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            String uid = task.getResult().getUser().getUid();
+                            FirebaseUser user = task.getResult().getUser();
+                            String uid = user.getUid();
 
-                            // Lưu tên người dùng vào Firestore
+                            // Bước 1: cập nhật displayName trong FirebaseAuth
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(username)
+                                    .build();
+
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(updateTask -> {
+                                        if (updateTask.isSuccessful()) {
+                                            Log.d("REGISTER", "DisplayName updated: " + user.getDisplayName());
+                                        }
+                                    });
+
+                            // Bước 2: lưu thông tin người dùng vào Firestore
                             Map<String, Object> userData = new HashMap<>();
                             userData.put("name", username);
+                            userData.put("email", email);
                             userData.put("created_at", FieldValue.serverTimestamp());
 
                             db.collection("users")
@@ -75,10 +91,17 @@ public class RegisterActivity extends AppCompatActivity {
                                     .addOnSuccessListener(unused -> {
                                         Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(this, LoginActivity.class));
+
+                                        user.sendEmailVerification()
+                                                .addOnSuccessListener(unused_mail -> {
+                                                    Toast.makeText(this, "Email xác minh đã được gửi", Toast.LENGTH_LONG).show();
+                                                });
+
                                         finish();
                                     })
                                     .addOnFailureListener(e -> {
-                                        Toast.makeText(this, "Lỗi lưu dữ liệu người dùng: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                        Log.e("REGISTER_FIRESTORE", "Lỗi lưu Firestore", e);
+                                        Toast.makeText(this, "Lỗi lưu thông tin người dùng: " + e.getMessage(), Toast.LENGTH_LONG).show();
                                     });
 
                         } else {

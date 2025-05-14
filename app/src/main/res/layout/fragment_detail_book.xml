@@ -60,20 +60,20 @@
             android:gravity="center"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp">
-            <TextView
-                android:id="@+id/txtRating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="5.0 (2,2N)"
-                android:textColor="#333333"
-                android:textSize="15sp"
-                android:textStyle="bold"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" • "
-                android:textColor="#333333"
-                android:textSize="15sp"/>
+<!--            <TextView-->
+<!--                android:id="@+id/txtRating"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="5.0 (2,2N)"-->
+<!--                android:textColor="#333333"-->
+<!--                android:textSize="15sp"-->
+<!--                android:textStyle="bold"/>-->
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text=" • "-->
+<!--                android:textColor="#333333"-->
+<!--                android:textSize="15sp"/>-->
             <TextView
                 android:id="@+id/txtGenre"
                 android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
                     android:id="@+id/txtBookInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sách\nTiếng Anh · 26 trang"
+                    android:text=""
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     android:textSize="15sp"
@@ -186,24 +186,24 @@
             android:nestedScrollingEnabled="false"/>
 
         <!-- Suggestions -->
-        <TextView
-            android:id="@+id/txtSuggestTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Có thể bạn muốn đọc"
-            android:textStyle="bold"
-            android:textColor="#222222"
-            android:textSize="15sp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"/>
+<!--        <TextView-->
+<!--            android:id="@+id/txtSuggestTitle"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Có thể bạn muốn đọc"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="#222222"-->
+<!--            android:textSize="15sp"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:layout_marginBottom="8dp"/>-->
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerSuggest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never"
-            android:scrollbars="none"
-            android:nestedScrollingEnabled="false"/>
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/recyclerSuggest"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:overScrollMode="never"-->
+<!--            android:scrollbars="none"-->
+<!--            android:nestedScrollingEnabled="false"/>-->
 
     </LinearLayout>
 </ScrollView>

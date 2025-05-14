@@ -1,6 +1,7 @@
 package com.readify.readify.profile;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,21 +47,31 @@ public class SettingsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_settings, container, false);
 
-        // Firebase
+//        // Firebase
         mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        currentUser = mAuth.getCurrentUser();
-
-        // View binding
+//        db = FirebaseFirestore.getInstance();
+//        currentUser = mAuth.getCurrentUser();
+        userName = view.findViewById(R.id.user_name);
         profileImage = view.findViewById(R.id.profile_image);
-//        userName = view.findViewById(R.id.user_name);
+        userName = view.findViewById(R.id.user_name);
         btnMyProfile = view.findViewById(R.id.btn_my_profile);
         btnLibraryPage = view.findViewById(R.id.btn_library_page);
         btnLogout = view.findViewById(R.id.btn_logout);
-//        btnBack = view.findViewById(R.id.btn_back);
 
-        // Click events
-//        btnBack.setOnClickListener(v -> requireActivity().onBackPressed());
+        FirebaseUser infoUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (infoUser != null) {
+            userName.setText(infoUser.getDisplayName());
+        }
+
+        if (infoUser != null) {
+            Log.d("INFO_USER", "UID: " + infoUser.getUid());
+            Log.d("INFO_USER", "Email: " + infoUser.getEmail());
+            Log.d("INFO_USER", "Phone: " + infoUser.getPhoneNumber());
+            Log.d("INFO_USER", "Name: " + infoUser.getDisplayName());
+            Log.d("INFO_USER", "PhotoURL: " + infoUser.getPhotoUrl());
+            Log.d("INFO_USER", "Is Email Verified: " + infoUser.isEmailVerified());
+            Log.d("INFO_USER", "Provider: " + infoUser.getProviderId());
+        }
 
         btnMyProfile.setOnClickListener(v -> {
             ProfileFragment fragment = new ProfileFragment();
@@ -90,8 +101,6 @@ public class SettingsFragment extends Fragment {
             startActivity(intent);
             requireActivity().finish();
         });
-
-
         return view;
     }
 }

@@ -120,7 +120,7 @@
             android:id="@+id/recyclerPopular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="Popular books list"
-            android:nestedScrollingEnabled="false" />
+            android:nestedScrollingEnabled="false"
+            android:contentDescription="Popular books list" />
     </LinearLayout>
 </ScrollView>

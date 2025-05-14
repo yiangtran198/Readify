@@ -2,6 +2,7 @@ package com.readify.readify.library;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,25 +12,32 @@ import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.readify.readify.R;
+import com.readify.readify.home.adapter.SearchBookAdapter;
+import com.readify.readify.home.data.SampleData;
+import com.readify.readify.home.fragment.DetailBookFragment;
 import com.readify.readify.home.model.Book;
 import com.readify.readify.profile.SettingsFragment;
+import com.readify.readify.repository.BookRepository;
 import com.readify.readify.utils.DeleteConfirmDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FollowingFragment extends Fragment {
-    private RecyclerView recyclerBooks;
+//    private RecyclerView recyclerBooks;
     private Button btnTabFollowing, btnTabViewed, btnTabLiked;
-    private ImageButton btnBack;
-    private FloatingActionButton fabAdd;
+    private RecyclerView recyclerPicks;
 
     private FirebaseFirestore db;
     private String currentUserId;
@@ -44,31 +52,34 @@ public class FollowingFragment extends Fragment {
         // Initialize Firebase
         db = FirebaseFirestore.getInstance();
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        recyclerPicks = view.findViewById(R.id.recyclerPicks);
+        List<Book> books = BookRepository.getInstance().getBooks();
+        com.readify.readify.home.adapter.BookAdapter.OnBookClickListener bookClickListener = book -> openBookDetail(book);
+        recyclerPicks.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        FirebaseUser infoUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (infoUser != null) {
+            String uid = infoUser.getUid();
+            db.collection("users").document(uid).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            List<String> followedBooks = (List<String>) documentSnapshot.get("followed_books");
+                            if (followedBooks != null) {
+                                List<Book> followedBookList = books.stream()
+                                        .filter(book -> followedBooks.contains(book.id))
+                                        .collect(Collectors.toList());
+                                        recyclerPicks.setAdapter(new com.readify.readify.home.adapter.BookAdapter(getContext(), followedBookList, bookClickListener));
+                                        recyclerPicks.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> Log.e("Firestore", "Lỗi lấy followed_books: " + e.getMessage()));
+        }
 
         // Initialize views
-        recyclerBooks = view.findViewById(R.id.recycler_books);
         btnTabFollowing = view.findViewById(R.id.btn_tab_following);
         btnTabViewed = view.findViewById(R.id.btn_tab_viewed);
         btnTabLiked = view.findViewById(R.id.btn_tab_liked);
-        btnBack = view.findViewById(R.id.btn_back);
-        fabAdd = view.findViewById(R.id.fab_add);
-
-        // Set up RecyclerView
-        recyclerBooks.setLayoutManager(new GridLayoutManager(getContext(), 2));
         bookAdapter = new BookAdapter(getContext(), bookList, true); // true for showing delete button
-        recyclerBooks.setAdapter(bookAdapter);
-
-        // Load following books
-        loadFollowingBooks();
-
-        // Set click listeners
-        btnBack.setOnClickListener(v -> {
-            // Navigate back to SettingsActivity
-            Intent intent = new Intent(getActivity(), SettingsFragment.class);
-            startActivity(intent);
-            getActivity().finish();
-        });
-
         btnTabFollowing.setOnClickListener(v -> {
             // Already on Following tab, do nothing
         });
@@ -87,82 +98,23 @@ public class FollowingFragment extends Fragment {
                     .commit();
         });
 
-        fabAdd.setOnClickListener(v -> {
-            // This functionality is handled by another team member
-            // Just show a toast for now
-            // Toast.makeText(getContext(), "Add book functionality will be implemented by another team member", Toast.LENGTH_SHORT).show();
-        });
-
         // Set delete listener for adapter
         bookAdapter.setOnDeleteClickListener(position -> {
             Book book = bookList.get(position);
-            showDeleteConfirmationDialog(book);
         });
 
         return view;
     }
 
-    private void loadFollowingBooks() {
-        db.collection("users").document(currentUserId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        List<String> favorites = (List<String>) documentSnapshot.get("favorites");
-
-                        if (favorites != null && !favorites.isEmpty()) {
-                            // Clear existing list
-                            bookList.clear();
-
-                            // Fetch each comic by ID
-                            for (String comicId : favorites) {
-                                db.collection("comics").document(comicId).get()
-                                        .addOnSuccessListener(comicDoc -> {
-                                            if (comicDoc.exists()) {
-                                                String title = comicDoc.getString("title");
-                                                String author = comicDoc.getString("author");
-                                                String coverUrl = comicDoc.getString("cover_url");
-
-//                                                Book book = new Book(comicId, title, author, coverUrl);
-//                                                bookList.add(book);
-                                                bookAdapter.notifyDataSetChanged();
-                                            }
-                                        });
-                            }
-                        }
-                    }
-                });
+    private void openBookDetail(Book book) {
+        DetailBookFragment fragment = new DetailBookFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("book", book);
+        fragment.setArguments(bundle);
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment); // fragment_container là id của FrameLayout chứa fragment
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
-    private void showDeleteConfirmationDialog(Book book) {
-        DeleteConfirmDialog dialog = new DeleteConfirmDialog(getContext(),
-                // Yes button click
-                () -> {
-                    // Remove from favorites in Firestore
-                    db.collection("users").document(currentUserId).get()
-                            .addOnSuccessListener(documentSnapshot -> {
-                                if (documentSnapshot.exists()) {
-                                    List<String> favorites = (List<String>) documentSnapshot.get("favorites");
-
-                                    if (favorites != null) {
-                                        favorites.remove(book.title);
-
-                                        // Update Firestore
-                                        db.collection("users").document(currentUserId)
-                                                .update("favorites", favorites)
-                                                .addOnSuccessListener(aVoid -> {
-                                                    // Remove from local list and update adapter
-                                                    bookList.remove(book);
-                                                    bookAdapter.notifyDataSetChanged();
-                                                });
-                                    }
-                                }
-                            });
-                },
-                // No button click
-                () -> {
-                    // Do nothing, just dismiss
-                }
-        );
-
-        dialog.show();
-    }
 }

@@ -7,11 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.readify.readify.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -19,7 +22,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileFragment extends Fragment {
     private CircleImageView profileImage;
     private Button btnEditProfile;
-    private ImageButton btnBack;
+
+    private TextView textName;
+    private TextView textEmail;
 
     public ProfileFragment() {
         // Required empty constructor
@@ -34,15 +39,25 @@ public class ProfileFragment extends Fragment {
 
         profileImage = view.findViewById(R.id.profile_image);
         btnEditProfile = view.findViewById(R.id.btn_edit_profile);
-        btnBack = view.findViewById(R.id.btn_back);
+        textName = view.findViewById(R.id.tv_name);
+        textEmail = view.findViewById(R.id.tv_email);
 
-        btnBack.setOnClickListener(v -> {
-            requireActivity().onBackPressed(); // hoặc popBackStack nếu dùng Navigation
-        });
+
+        FirebaseUser infoUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (infoUser != null) {
+            textName.setText(infoUser.getDisplayName());
+            textEmail.setText(infoUser.getEmail());
+        }
 
         btnEditProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), EditProfileActivity.class);
-            startActivity(intent);
+            EditProfileFragment fragment = new EditProfileFragment();
+            Bundle bundle = new Bundle();
+            fragment.setArguments(bundle);
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
         return view;

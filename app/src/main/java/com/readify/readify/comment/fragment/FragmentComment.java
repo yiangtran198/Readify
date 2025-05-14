@@ -49,11 +49,7 @@ public class FragmentComment extends Fragment {
         setupReviewList();
         setupStarRating();
 
-        ImageButton btnBack = view.findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> getParentFragmentManager().popBackStack());
     }
-
-
 
     private void initializeUI(View view) {
         reviewRecyclerView = view.findViewById(R.id.reviewRecyclerView);

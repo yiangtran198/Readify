@@ -2,15 +2,53 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
+    android:layout_margin="8dp"
     card_view:cardCornerRadius="12dp"
-    card_view:cardElevation="2dp"
-    android:layout_gravity="center">
+    card_view:cardElevation="4dp"
+    android:padding="8dp">
 
-    <ImageView
-        android:id="@+id/imgBookCover"
-        android:layout_width="120dp"
-        android:layout_height="150dp"
-        android:scaleType="centerCrop"
-        android:contentDescription="Book cover" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Ảnh bìa -->
+        <ImageView
+            android:id="@+id/imgBookCover"
+            android:layout_width="100dp"
+            android:layout_height="140dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="Book cover" />
+
+        <!-- Nội dung sách -->
+        <LinearLayout
+            android:id="@+id/bookInfoLayout"
+            android:layout_width="900dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvBookTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tvBookAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#555"
+                android:textSize="14sp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

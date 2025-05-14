@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Book implements Serializable {
+    public String id;
+
     public String title;
     public String author;
     public String image;
@@ -17,7 +19,8 @@ public class Book implements Serializable {
         // Required for Firebase deserialization
     }
 
-    public Book(String title,String author,String description,String image,List<String> categories,String status,String created_at,List<String> pages) {
+    public Book(String id, String title,String author,String description,String image,List<String> categories,String status,String created_at,List<String> pages) {
+        this.id = id;
         this.title = title;
         this.author = author;
         this.description = description;

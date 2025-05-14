@@ -18,6 +18,7 @@
 
         <!-- Main Activity -->
         <activity
+            android:theme="@style/Theme.Readify"
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -28,24 +29,28 @@
 
         <!-- Login Activity -->
         <activity
+            android:theme="@style/Theme.Readify"
             android:name=".auth.LoginActivity"
             android:exported="true">
         </activity>
 
         <!-- Register Activity -->
         <activity
+            android:theme="@style/Theme.Readify"
             android:name=".auth.RegisterActivity"
             android:exported="true">
         </activity>
 
         <!-- Forgot Password Activity -->
         <activity
+            android:theme="@style/Theme.Readify"
             android:name=".auth.ForgotPassword"
             android:exported="true">
         </activity>
 
         <!-- Home Activity -->
         <activity
+            android:theme="@style/Theme.Readify"
             android:name=".home.HomeActivity"
             android:exported="true">
         </activity>

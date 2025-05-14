@@ -19,6 +19,7 @@ import com.readify.readify.home.data.SampleData;
 import com.readify.readify.home.model.Book;
 import com.readify.readify.home.model.BookViewModel;
 import com.readify.readify.home.model.Category;
+import com.readify.readify.repository.LibraryBooksRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +27,12 @@ import java.util.List;
 public class FragmentHome extends Fragment {
     private RecyclerView recyclerCategory, recyclerPicks, recyclerSelfHelp, recyclerPopular;
     private BookViewModel bookViewModel;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         bookViewModel = new ViewModelProvider(this).get(BookViewModel.class);
+
         // Initialize RecyclerViews
         recyclerCategory = view.findViewById(R.id.recyclerCategory);
         recyclerPicks = view.findViewById(R.id.recyclerPicks);
@@ -77,6 +80,15 @@ public class FragmentHome extends Fragment {
 
 
         bookViewModel.fetchBooks();
+
+        LibraryBooksRepository.getInstance().loadLibraryBooks(
+                () -> {
+                    List<String> followed = LibraryBooksRepository.getInstance().getFollowedBooks();
+                },
+                () -> {
+                    Log.e("LIBRARY", "Không thể tải dữ liệu thư viện");
+                }
+        );
 
         // Sự kiện click search
         View searchView = view.findViewById(R.id.ivSearch);

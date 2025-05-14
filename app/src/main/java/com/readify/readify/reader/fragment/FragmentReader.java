@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,12 +19,22 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.readify.readify.R;
 import com.readify.readify.home.model.Book;
 import com.readify.readify.reader.adapter.ReaderAdapter;
+import com.readify.readify.repository.LibraryBooksRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FragmentReader extends Fragment {
 
@@ -34,6 +45,8 @@ public class FragmentReader extends Fragment {
     private RelativeLayout layoutReader;
     private TextView tvPageNumber;
     private Book book;
+
+    private Integer currentPageRead;
 
     public FragmentReader() {
         // Required empty constructor
@@ -51,10 +64,9 @@ public class FragmentReader extends Fragment {
         ImageButton btnFontUp = view.findViewById(R.id.btnFontUp);
         ImageButton btnFontDown = view.findViewById(R.id.btnFontDown);
         ImageButton btnToggleMode = view.findViewById(R.id.btnToggleMode);
-        ImageButton btnBack = view.findViewById(R.id.btnBack);
         tvPageNumber = view.findViewById(R.id.tvPageNumber);
-
-
+        ImageButton btnPin = view.findViewById(R.id.pin);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Get Book from arguments
         if (getArguments() != null) {
             book = (Book) getArguments().getSerializable("book");
@@ -96,13 +108,94 @@ public class FragmentReader extends Fragment {
             isNightMode = !isNightMode;
             layoutReader.setBackgroundColor(isNightMode ? 0xFF1E1E1E : 0xFFFFFFFF);
             int tintColor = ContextCompat.getColor(requireContext(), isNightMode ? R.color.text_light_gray : R.color. text_dark_gray);
-            btnBack.setImageTintList(ColorStateList.valueOf(tintColor));
             btnFontUp.setImageTintList(ColorStateList.valueOf(tintColor));
             btnFontDown.setImageTintList(ColorStateList.valueOf(tintColor));
-
+            btnPin.setImageTintList(ColorStateList.valueOf(tintColor));
             btnToggleMode.setImageResource(isNightMode ? R.drawable.light_mode : R.drawable.dark_mode);
 
             adapter.setNightMode(isNightMode);
+        });
+
+
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+//        btnPin.setOnClickListener(v -> {
+//            isNightMode = !isNightMode;
+//            layoutReader.setBackgroundColor(isNightMode ? 0xFF1E1E1E : 0xFFFFFFFF);
+//            int tintColor = ContextCompat.getColor(requireContext(), isNightMode ? R.color.text_light_gray : R.color. text_dark_gray);
+//            btnFontUp.setImageTintList(ColorStateList.valueOf(tintColor));
+//            btnFontDown.setImageTintList(ColorStateList.valueOf(tintColor));
+//            btnToggleMode.setImageResource(isNightMode ? R.drawable.light_mode : R.drawable.dark_mode);
+//
+//            adapter.setNightMode(isNightMode);
+//        });
+
+        if (book != null && currentUser != null) {
+            String uid = currentUser.getUid();
+            FirebaseFirestore.getInstance()
+                    .collection("users")
+                    .document(uid)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists() && documentSnapshot.contains("page_books")) {
+                            List<Map<String, Object>> existingBooks = (List<Map<String, Object>>) documentSnapshot.get("page_books");
+
+                            for (Map<String, Object> entry : existingBooks) {
+                                if (entry.get("id").equals(book.id)) {
+                                    Object pageObj = entry.get("page");
+                                    if (pageObj instanceof Number) {
+                                        currentPageRead = ((Number) pageObj).intValue();
+                                        if (viewPager.getAdapter() != null) {
+                                            viewPager.setCurrentItem(currentPageRead-1, false);
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    });
+        }
+
+
+        btnPin.setOnClickListener(v -> {
+            if (currentUser == null) return;
+            String uid = currentUser.getUid();
+            int currentPage = currentPageRead; // truyền từ đâu đó vào
+            String bookId = book.id;
+
+            DocumentReference docRef = db.collection("users").document(uid);
+            docRef.get().addOnSuccessListener(documentSnapshot -> {
+                List<Map<String, Object>> readedBooks = new ArrayList<>();
+
+                if (documentSnapshot.exists() && documentSnapshot.contains("page_books")) {
+                    List<Map<String, Object>> existingBooks = (List<Map<String, Object>>) documentSnapshot.get("page_books");
+
+                    boolean found = false;
+                    for (Map<String, Object> entry : existingBooks) {
+                        if (entry.get("id").equals(bookId)) {
+                            entry.put("page", currentPage); // Cập nhật trang mới
+                            found = true;
+                        }
+                        readedBooks.add(entry);
+                    }
+
+                    if (!found) {
+                        Map<String, Object> newEntry = new HashMap<>();
+                        newEntry.put("id", bookId);
+                        newEntry.put("page", currentPage);
+                        readedBooks.add(newEntry);
+                    }
+                } else {
+                    Map<String, Object> newEntry = new HashMap<>();
+                    newEntry.put("id", bookId);
+                    newEntry.put("page", currentPage);
+                    readedBooks.add(newEntry);
+                }
+
+                Map<String, Object> updatedData = new HashMap<>();
+                updatedData.put("page_books", readedBooks);
+                docRef.set(updatedData, SetOptions.merge());
+            });
         });
 
         return view;
@@ -116,6 +209,7 @@ public class FragmentReader extends Fragment {
             }
             String current = String.valueOf(position + 1);
             tvPageNumber.setText(current + "/" + total);
+            currentPageRead =  Integer.parseInt(current);
         }
     }
 

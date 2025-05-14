@@ -3,12 +3,14 @@ package com.readify.readify.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -25,7 +27,7 @@ import com.readify.readify.reader.fragment.FragmentReader;
 
 public class HomeActivity extends AppCompatActivity {
     private ImageView ivSearch;
-    private ImageButton btnMenu;
+    private ImageButton btnMenu, btnBack;
     private LinearLayout header;
     private FirebaseAuth mAuth;
 
@@ -53,6 +55,8 @@ public class HomeActivity extends AppCompatActivity {
 
         ivSearch = findViewById(R.id.ivSearch);
         btnMenu = findViewById(R.id.ivMenu);
+        btnBack = findViewById(R.id.btnBack);
+
 
         btnMenu.setOnClickListener(v -> {
             SettingsFragment fragment = new SettingsFragment();
@@ -63,6 +67,15 @@ public class HomeActivity extends AppCompatActivity {
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
+        });
+
+
+        btnBack.setOnClickListener(v -> {
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                getSupportFragmentManager().popBackStack();  // Quay về fragment trước
+            } else {
+                finish(); // Không có gì để back, thoát activity
+            }
         });
 
         ivSearch.setOnClickListener(new View.OnClickListener() {

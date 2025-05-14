@@ -40,7 +40,7 @@ public class SampleData {
         );
 
         if (type.equals("Picks")) {
-            books.add( new Book( "The Forgotten Castle",
+            books.add( new Book("0001", "The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
                     "https://loading.jpg",
@@ -48,7 +48,7 @@ public class SampleData {
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
                     pages));
-            books.add( new Book( "The Forgotten Castle",
+            books.add( new Book("0002", "The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
                     "https://loading.jpg",
@@ -56,7 +56,7 @@ public class SampleData {
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
                     pages));
-            books.add( new Book( "The Forgotten Castle",
+            books.add( new Book("0003", "The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
                     "https://loading.jpg",
@@ -66,7 +66,7 @@ public class SampleData {
                     pages));
 
         } else if (type.equals("SelfHelp")) {
-            books.add( new Book( "The Forgotten Castle",
+            books.add( new Book("0004", "The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
                     "https://loading.jpg",
@@ -74,7 +74,7 @@ public class SampleData {
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
                     pages));
-            books.add( new Book( "The Forgotten Castle",
+            books.add( new Book("0005", "The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
                     "https://loading.jpg",
@@ -82,7 +82,7 @@ public class SampleData {
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
                     pages));
-            books.add( new Book( "The Forgotten Castle",
+            books.add( new Book( "0006","The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
                     "https://loading.jpg",
@@ -91,7 +91,7 @@ public class SampleData {
                     "2025-05-08T14:25:53.905064",
                     pages));
         } else if (type.equals("Popular")) {
-            books.add( new Book( "The Forgotten Castle",
+            books.add( new Book("0007", "The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
                     "https://loading.jpg",
@@ -99,7 +99,7 @@ public class SampleData {
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
                     pages));
-            books.add( new Book( "The Forgotten Castle",
+            books.add( new Book("0008", "The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
                     "https://loading.jpg",
@@ -107,7 +107,7 @@ public class SampleData {
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
                     pages));
-            books.add( new Book( "The Forgotten Castle",
+            books.add( new Book( "0009","The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
                     "https://loading.jpg",

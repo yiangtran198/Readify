@@ -27,15 +27,15 @@
             android:layout_gravity="start"
             >
 
-            <ImageButton
-                android:id="@+id/btnBack"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
-                android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                android:src="@drawable/ic_back" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/btnBack"-->
+<!--                android:layout_width="22dp"-->
+<!--                android:layout_height="22dp"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:contentDescription="Back"-->
+<!--                android:scaleType="fitCenter"-->
+<!--                android:adjustViewBounds="true"-->
+<!--                android:src="@drawable/ic_back" />-->
         </LinearLayout>
 
         <!-- TextView nằm ở giữa Toolbar -->

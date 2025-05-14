@@ -12,18 +12,6 @@
         android:layout_alignParentTop="true"
         android:padding="8dp">
 
-        <!-- Nút Back bên trái -->
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/arrow_back" />
-
         <!-- Nhóm nút icon bên phải -->
         <LinearLayout
             android:id="@+id/layoutRightIcons"
@@ -39,7 +27,6 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Giảm cỡ chữ"
                 android:src="@drawable/text_decrease"
                 />
 
@@ -49,7 +36,6 @@
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Tăng cỡ chữ"
                 android:src="@drawable/text_increase"
                 />
 
@@ -59,8 +45,16 @@
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Chế độ tối"
                 android:src="@drawable/dark_mode"
+                />
+
+            <ImageButton
+                android:id="@+id/pin"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/loyalty"
                 />
         </LinearLayout>
     </RelativeLayout>
