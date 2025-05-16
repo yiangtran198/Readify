@@ -197,6 +197,9 @@ public class DetailBookFragment extends Fragment {
         Button btnComment = view.findViewById(R.id.txtReviewTitle);
         btnComment.setOnClickListener(v -> {
             FragmentComment fragment = new FragmentComment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("book", book);
+            fragment.setArguments(bundle);
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)

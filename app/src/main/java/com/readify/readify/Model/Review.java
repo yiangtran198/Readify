@@ -1,19 +1,17 @@
 package com.readify.readify.Model;
 public class Review {
-    private String reviewerName;
+    private String name;
     private String content;
     private int rating;
-    private String date;
 
-    public Review(String reviewerName, String content, int rating, String date) {
-        this.reviewerName = reviewerName;
+    public Review(String name, String content, int rating) {
+        this.name = name;
         this.content = content;
         this.rating = rating;
-        this.date = date;
     }
 
     public String getReviewerName() {
-        return reviewerName;
+        return name;
     }
 
     public String getContent() {
@@ -24,7 +22,4 @@ public class Review {
         return rating;
     }
 
-    public String getDate() {
-        return date;
-    }
 }

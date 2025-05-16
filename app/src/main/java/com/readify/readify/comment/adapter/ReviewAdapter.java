@@ -58,7 +58,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             txtReviewerName.setText(review.getReviewerName());
             txtReviewContent.setText(review.getContent());
             ratingBar.setRating(review.getRating());
-            txtReviewDate.setText(review.getDate());
+//            txtReviewDate.setText(review.getDate());
         }
     }
 }

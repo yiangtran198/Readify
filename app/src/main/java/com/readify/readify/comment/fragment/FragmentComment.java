@@ -1,6 +1,7 @@
 package com.readify.readify.comment.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,20 +14,35 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.SetOptions;
 import com.readify.readify.R;
 import com.readify.readify.Model.Review;
 import com.readify.readify.comment.adapter.ReviewAdapter;
+import com.readify.readify.home.adapter.BookAdapter;
+import com.readify.readify.home.adapter.PopularBookAdapter;
+import com.readify.readify.home.model.Book;
+import com.readify.readify.home.model.BookViewModel;
+import com.readify.readify.home.model.ReviewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 public class FragmentComment extends Fragment {
 
@@ -41,6 +57,8 @@ public class FragmentComment extends Fragment {
 
     // Firebase Auth
     private FirebaseAuth mAuth;
+    private Book book;
+    private BookViewModel bookViewModel;
 
     public FragmentComment() {
         // Constructor rỗng là bắt buộc cho Fragment
@@ -59,14 +77,19 @@ public class FragmentComment extends Fragment {
     public void onViewCreated(@NonNull View view,
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        bookViewModel = new ViewModelProvider(this).get(BookViewModel.class);
         // Khởi tạo Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+
+        if (getArguments() != null) {
+            book = (Book) getArguments().getSerializable("book");
+        }
 
         initializeUI(view);
         setupReviewList();
         setupStarRating();
         setupSendButton();
+        bookViewModel.fetchBooks();
 
     }
 
@@ -89,17 +112,35 @@ public class FragmentComment extends Fragment {
     private void setupReviewList() {
         reviewList = new ArrayList<>();
 
-        // Dữ liệu mẫu giống như bạn đã cung cấp
-        reviewList.add(new Review("Trung Pham", "Rất hay và tuyệt vời, đã đọc lại lần thứ vẫn hay như lần đầu", 5, "17 thg 12 2024"));
-        reviewList.add(new Review("Trung Anh", "Rất hay và tuyệt vời...", 5, "2 thg 12 2024"));
-        reviewList.add(new Review("Elon Musk", "Very good", 5, "26 thg 10 2024"));
-        reviewList.add(new Review("Aron", "ok", 5, "09 thg 05 2024"));
-        reviewList.add(new Review("Quốc Cường", "Sách hay lắm", 5, "20 thg 06 2024"));
-        reviewList.add(new Review("Dieu Dieu", "10 điêm", 5, "04 thg 07 2024"));
+//        for (Review comment : book.comments) {
+//            Review review = new Review(comment.getReviewerName(), comment.getContent(), comment.getRating()); // Giả sử Review có constructor nhận Comment
+//            reviewList.add(review);
+//        }
+
+        bookViewModel.getBookList().observe(getViewLifecycleOwner(), books -> {
+            if (books != null && !books.isEmpty()) {
+                for (Book b : books) {
+                    if (Objects.equals(b.id, book.id)) {
+                        if (b.comments != null && !b.comments.isEmpty()) {
+                            for (Review comment : b.comments) {
+                                Review review = new Review(
+                                        comment.getReviewerName(),
+                                        comment.getContent(),
+                                        comment.getRating()
+                                );
+                                reviewList.add(review);
+                            }
+                        }
+                    }
+                }
+                reviewAdapter.notifyDataSetChanged();
+            }
+        });
 
         reviewAdapter = new ReviewAdapter(reviewList);
         reviewRecyclerView.setAdapter(reviewAdapter);
     }
+
 
     private void setupStarRating() {
         for (int i = 0; i < ratingStars.length; i++) {
@@ -144,6 +185,40 @@ public class FragmentComment extends Fragment {
         });
     }
 
+    private void addCommentToBook(String bookId, String name, String content, int rating) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Tạo comment mới
+        Map<String, Object> newComment = new HashMap<>();
+        newComment.put("name", name);
+        newComment.put("content", content);
+        newComment.put("rating", rating);
+
+        DocumentReference docRef = db.collection("comics").document(bookId);
+
+        // Thêm comment vào mảng 'comments', tạo document nếu chưa có
+        docRef.update("comments", FieldValue.arrayUnion(newComment))
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Comment added successfully.");
+                })
+                .addOnFailureListener(e -> {
+                    // Nếu document chưa tồn tại thì tạo mới và thêm comments
+                    if (e instanceof FirebaseFirestoreException &&
+                            ((FirebaseFirestoreException) e).getCode() == FirebaseFirestoreException.Code.NOT_FOUND) {
+
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("comments", Arrays.asList(newComment));
+                        docRef.set(data)
+                                .addOnSuccessListener(unused -> Log.d("Firestore", "Document created and comment added."))
+                                .addOnFailureListener(ex -> Log.e("Firestore", "Failed to create document", ex));
+                    } else {
+                        Log.e("Firestore", "Error adding comment", e);
+                    }
+                });
+    }
+
+
+
     private void resetStarRating() {
         currentRating = 0;
         for (ImageView star : ratingStars) {
@@ -160,7 +235,7 @@ public class FragmentComment extends Fragment {
         String userName = getUserName(user);
 
         // Tạo đối tượng Review mới
-        Review newReview = new Review(userName, content, rating, currentDate);
+        Review newReview = new Review(userName, content, rating);
 
         // Thêm nhận xét mới vào đầu danh sách
         reviewList.add(0, newReview);
@@ -177,6 +252,9 @@ public class FragmentComment extends Fragment {
 
         // Cập nhật điểm trung bình
         updateAverageRating();
+
+        addCommentToBook(book.id,userName,content, rating);
+        Log.d("--------------", "addNewReview: "+book.id);
 
         // Hiển thị thông báo
         Toast.makeText(getContext(), "Đã gửi nhận xét thành công", Toast.LENGTH_SHORT).show();

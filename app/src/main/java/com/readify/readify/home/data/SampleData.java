@@ -1,5 +1,6 @@
 package com.readify.readify.home.data;
 
+import com.readify.readify.Model.Review;
 import com.readify.readify.home.model.Book;
 import com.readify.readify.home.model.Category;
 import java.util.ArrayList;
@@ -38,6 +39,10 @@ public class SampleData {
                 "The whispers grew louder each night...",
                 "A sudden wind extinguished her candles..."
         );
+        List<Review> comments = new ArrayList<>();
+        comments.add(new Review("cuong", "nice", 4));
+        comments.add(new Review("an", "interesting story", 5));
+        comments.add(new Review("linh", "could be better", 3));
 
         if (type.equals("Picks")) {
             books.add( new Book("0001", "The Forgotten Castle",
@@ -47,7 +52,7 @@ public class SampleData {
                     categories,
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
-                    pages));
+                    pages, comments));
             books.add( new Book("0002", "The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
@@ -55,7 +60,7 @@ public class SampleData {
                     categories,
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
-                    pages));
+                    pages, comments));
             books.add( new Book("0003", "The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
@@ -63,7 +68,7 @@ public class SampleData {
                     categories,
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
-                    pages));
+                    pages, comments));
 
         } else if (type.equals("SelfHelp")) {
             books.add( new Book("0004", "The Forgotten Castle",
@@ -73,7 +78,7 @@ public class SampleData {
                     categories,
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
-                    pages));
+                    pages, comments));
             books.add( new Book("0005", "The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
@@ -81,7 +86,7 @@ public class SampleData {
                     categories,
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
-                    pages));
+                    pages, comments));
             books.add( new Book( "0006","The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
@@ -89,7 +94,7 @@ public class SampleData {
                     categories,
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
-                    pages));
+                    pages, comments));
         } else if (type.equals("Popular")) {
             books.add( new Book("0007", "The Forgotten Castle",
                     "Lily Nguyen",
@@ -98,7 +103,7 @@ public class SampleData {
                     categories,
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
-                    pages));
+                    pages, comments));
             books.add( new Book("0008", "The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
@@ -106,7 +111,7 @@ public class SampleData {
                     categories,
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
-                    pages));
+                    pages, comments));
             books.add( new Book( "0009","The Forgotten Castle",
                     "Lily Nguyen",
                     "A tale of love and betrayal set in a crumbling European castle during the 1800s.",
@@ -114,7 +119,7 @@ public class SampleData {
                     categories,
                     "Ongoing",
                     "2025-05-08T14:25:53.905064",
-                    pages));
+                    pages, comments));
         }
         return books;
     }

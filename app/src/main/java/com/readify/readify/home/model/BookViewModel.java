@@ -9,10 +9,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.readify.readify.Model.Review;
 import com.readify.readify.repository.BookRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BookViewModel extends ViewModel {
@@ -49,12 +51,41 @@ public class BookViewModel extends ViewModel {
                 List<String> pages = (List<String>) doc.get("pages");
                 Timestamp timestamp = doc.getTimestamp("created_at");
                 String created_at = timestamp != null ? timestamp.toDate().toString() : null;
-                Book book = new Book(id, title, author, description, image, categories, status, created_at, pages);
+
+                // Lấy danh sách comment từ Firestore
+
+                Object commentsObj = doc.get("comments");
+                List<Review> reviews = new ArrayList<>();
+
+                if (commentsObj instanceof List<?>) {
+                    List<?> commentList = (List<?>) commentsObj;
+                    for (Object obj : commentList) {
+                        if (obj instanceof Map<?, ?>) {
+                            Map<?, ?> map = (Map<?, ?>) obj;
+                            // Lấy từng trường và kiểm tra kiểu
+                            String name = map.get("name") instanceof String ? (String) map.get("name") : "";
+                            String content = map.get("content") instanceof String ? (String) map.get("content") : "";
+
+                            int rating = 0;
+                            Object ratingObj = map.get("rating");
+                            if (ratingObj instanceof Long) {
+                                rating = ((Long) ratingObj).intValue();
+                            } else if (ratingObj instanceof Double) {
+                                rating = ((Double) ratingObj).intValue();
+                            }
+
+                            reviews.add(new Review(name, content, rating));
+                        }
+                    }
+                }
+
+                Book book = new Book(id, title, author, description, image, categories, status, created_at, pages, reviews);
                 tempList.add(book);
-                BookRepository.getInstance().setBooks(tempList);
             }
+            BookRepository.getInstance().setBooks(tempList);
             bookList.setValue(tempList);
         });
+
     }
 
 }
